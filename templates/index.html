@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie Sentiment Analyzer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1f1c2c, #928dab);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 400px;
+            text-align: center;
+        }
+        h1 { color: #333; font-size: 22px; margin-bottom: 20px; }
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            resize: none;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 25px;
+            background: #6a5af9;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        button:hover { background: #5848d9; }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .positive { color: #2ecc71; }
+        .negative { color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🎬 Movie Review Sentiment Analyzer</h1>
+        <textarea id="reviewText" placeholder="Paste a movie review here..."></textarea>
+        <br>
+        <button onclick="predictSentiment()">Analyze</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function predictSentiment() {
+            const text = document.getElementById("reviewText").value;
+            const resultDiv = document.getElementById("result");
+            resultDiv.textContent = "Analyzing...";
+
+            const response = await fetch("/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: text })
+            });
+            const data = await response.json();
+
+            resultDiv.textContent = data.sentiment.toUpperCase();
+            resultDiv.className = data.sentiment;
+        }
+    </script>
+</body>
+</html>
